@@ -7,7 +7,6 @@ const platformHeight = 125
 const platformSmallTallWidth = 291
 const platformSmallTallHeight = 227
 
-
 let playerImagePath = './assets/spriteStandRight.png';
 
 const gravity = 2
@@ -103,7 +102,7 @@ class Platform {
         if(this.image.complete) {
             c.drawImage(this.image, this.position.x, this.position.y, this.width, this.height)
         } else {
-            c.fillStyle = 'blue'
+            c.fillStyle = 'transparent'
             c.fillRect(this.position.x,
                        this.position.y,
                        this.width,
@@ -127,7 +126,7 @@ class GenericObject {
         if(this.image.complete) {
             c.drawImage(this.image, this.position.x, this.position.y, this.width, this.height)
         } else {
-            c.fillStyle = 'blue'
+            c.fillStyle = 'transparent'
             c.fillRect(this.position.x,
                        this.position.y,
                        this.width,
@@ -383,53 +382,112 @@ addEventListener('keyup', ({ keyCode }) => {
     }
 })
 
-function handleTouchStart(event) {
-    event.preventDefault();
-    const touchX = event.touches[0].clientX;
-    const touchY = event.touches[0].clientY;
-
-    if (touchY < window.innerHeight / 2 && touchX > window.innerWidth / 3 && touchX < window.innerWidth * (2/3) ) {
-        keys.up.pressed = true;
-        const currentTime = Date.now();
-            const timeSinceLastJump = currentTime - lastJumpTime;
-            if (!isJumping && timeSinceLastJump < 20 && jumpCount < 2) {
-                player.velocity.y -= 30;
-                isJumping = true;
-                jumpCount++;
-            } else if(!isJumping && jumpCount <= 2 ) {
-                player.velocity.y -= 15;
-                jumpCount++
-                keys.up.pressed = false
-            } else if(!isJumping && jumpCount === 3 && keys.up.pressed) {
-                jumpCount = 1
-            }
-            lastJumpTime = currentTime;
-            console.log('up')
-    } else if(touchX < window.innerWidth / 2) {
-        changePlayerImage('./assets/spriteRunLeft.png');
-        player.currentCropWidth = player.sprites.run.cropWidth
-        player.width = player.sprites.run.width
-        keys.left.pressed = true;
-        keys.right.pressed = false;
-    } else if(touchX > window.innerWidth / 2) {
-        changePlayerImage('./assets/spriteRunRight.png');
-        keys.left.pressed = false;
-        keys.right.pressed = true;
-        player.currentCropWidth = player.sprites.run.cropWidth
-        player.width = player.sprites.run.width
-    }
+const leftMove = () => {
+    keys.left.pressed = true
+    changePlayerImage('./assets/spriteRunLeft.png');
+    player.currentCropWidth = player.sprites.run.cropWidth
+    player.width = player.sprites.run.width
 }
 
-function handleTouchEnd(event) {
-    event.preventDefault();
-    
-    keys.left.pressed = false;
-    keys.right.pressed = false;
-    keys.up.pressed = false;
+const stopLeftMove = () => {
+    keys.left.pressed = false
+    changePlayerImage('./assets/spriteStandLeft.png');
+    player.currentCropWidth = player.sprites.stand.cropWidth
+    player.width = player.sprites.stand.width
+}
+
+const rightMove = () => {
+    keys.right.pressed = true
+    changePlayerImage('./assets/spriteRunRight.png');
+    player.currentCropWidth = player.sprites.run.cropWidth
+    player.width = player.sprites.run.width
+}
+const stopRightMove = () => {
+    keys.right.pressed = false
     changePlayerImage('./assets/spriteStandRight.png');
     player.currentCropWidth = player.sprites.stand.cropWidth
     player.width = player.sprites.stand.width
 }
 
-canvas.addEventListener('touchstart', handleTouchStart);
-canvas.addEventListener('touchend', handleTouchEnd);
+const jumpMove = () => {
+    keys.up.pressed = true
+    const currentTime = Date.now();
+    const timeSinceLastJump = currentTime - lastJumpTime;
+    if (!isJumping && timeSinceLastJump < 1 && jumpCount < 2) {
+        player.velocity.y -= 10;
+        isJumping = true;
+        jumpCount++;
+    } else if(!isJumping && jumpCount <= 2 ) {
+        player.velocity.y -= 15;
+        jumpCount++
+        keys.up.pressed = false
+    } else if(!isJumping && jumpCount === 3 && keys.up.pressed) {
+        jumpCount = 1
+    }
+    lastJumpTime = currentTime;
+}
+
+const stopJumpMove = () => {
+    isJumping = false;
+}
+
+document.getElementById('leftButton').addEventListener('touchstart', leftMove)
+document.getElementById('leftButton').addEventListener('touchend', stopLeftMove)
+document.getElementById('rightButton').addEventListener('touchstart', rightMove)
+document.getElementById('rightButton').addEventListener('touchend', stopRightMove)
+document.getElementById('jumpButton').addEventListener('touchstart', jumpMove)
+document.getElementById('jumpButton').addEventListener('touchend', stopJumpMove)
+
+
+
+
+// function handleTouchStart(event) {
+//     event.preventDefault();
+//     const touchX = event.touches[0].clientX;
+//     const touchY = event.touches[0].clientY;
+
+//     if (touchY < window.innerHeight / 2 && touchX > window.innerWidth / 3 && touchX < window.innerWidth * (2/3) ) {
+//         keys.up.pressed = true;
+//         const currentTime = Date.now();
+//             const timeSinceLastJump = currentTime - lastJumpTime;
+//             if (!isJumping && timeSinceLastJump < 20 && jumpCount < 2) {
+//                 player.velocity.y -= 30;
+//                 isJumping = true;
+//                 jumpCount++;
+//             } else if(!isJumping && jumpCount <= 2 ) {
+//                 player.velocity.y -= 15;
+//                 jumpCount++
+//                 keys.up.pressed = false
+//             } else if(!isJumping && jumpCount === 3 && keys.up.pressed) {
+//                 jumpCount = 1
+//             }
+//             lastJumpTime = currentTime;
+//             console.log('up')
+//     } else if(touchX < window.innerWidth / 2) {
+//         changePlayerImage('./assets/spriteRunLeft.png');
+//         player.currentCropWidth = player.sprites.run.cropWidth
+//         player.width = player.sprites.run.width
+//         keys.left.pressed = true;
+//         keys.right.pressed = false;
+//     } else if(touchX > window.innerWidth / 2) {
+//         changePlayerImage('./assets/spriteRunRight.png');
+//         keys.left.pressed = false;
+//         keys.right.pressed = true;
+//         player.currentCropWidth = player.sprites.run.cropWidth
+//         player.width = player.sprites.run.width
+//     }
+// }
+
+// function handleTouchEnd(event) {
+//     event.preventDefault();
+    
+//     keys.left.pressed = false;
+//     keys.right.pressed = false;
+//     keys.up.pressed = false;
+//     changePlayerImage('./assets/spriteStandRight.png');
+//     player.currentCropWidth = player.sprites.stand.cropWidth
+//     player.width = player.sprites.stand.width
+// }
+
+// canvas.addEventListener('touchstart', handleTouchStart);
+// canvas.addEventListener('touchend', handleTouchEnd);

@@ -5,9 +5,56 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
-    }
+        position: relative;
+        height: 100vh;}
+
+    .button-container {
+        position: absolute;
+        width: 1024;
+        height: 576;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 30px;}
+
+    button {
+        opacity: .5;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        width: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 100px;
+        height: 100px;}
+
+    #jumpButton {
+        margin-right: 100px;}
+
+    .button-wrapper-left {
+        margin-left: 50px;
+        display: flex;
+        gap: 50px;}
+
+    i {
+        color: black;}
 </style>
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+<div class="button-container">
+    <div class="button-wrapper-left">
+        <button id="leftButton">
+            <i class="ph ph-caret-circle-left"></i>
+        </button>
+        <button id="rightButton">
+            <i class="ph ph-caret-circle-right"></i>
+        </button>
+    </div>
+    <button id="jumpButton">
+        <i class="ph ph-caret-circle-up"></i>
+    </button>
+</div>
 <canvas></canvas>
 
 <script src="index.js" type="module"></script>
